@@ -41,7 +41,7 @@ public class StudentService {
     }
 
     public Iterable<StudentEntity> findByExample(StudentEntity entity) {
-
+//todo extend this method
         ExampleMatcher customExampleMatcher = ExampleMatcher.matchingAll()
                 .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase())
                 .withMatcher("family", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase());

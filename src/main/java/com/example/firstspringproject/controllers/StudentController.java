@@ -15,11 +15,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/students")
 public class StudentController {
+    public static ThreadLocal<StudentDto> threadLocal = new ThreadLocal<>();
+
     private final static Logger LOGGER = LoggerFactory.getLogger(StudentController.class);
     @Autowired
     private StudentConverter studentConverter;
@@ -27,7 +30,7 @@ public class StudentController {
     private StudentService studentService;
 
     @RequestMapping(value = "/print", method = RequestMethod.POST)
-    public void printStudent(@RequestBody StudentDto dto, HttpServletRequest httpServletRequest) {
+    public void printStudent(@Valid @RequestBody StudentDto dto, HttpServletRequest httpServletRequest) {
         LOGGER.info(dto.toString());
         LOGGER.trace("");
     }
@@ -35,8 +38,11 @@ public class StudentController {
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @Transactional()
     public void save(@RequestBody StudentDto dto) {
+
         studentService.saveToMongo(studentConverter.destinationToSourceModel(dto));
         studentService.save(studentConverter.destinationToSource(dto));
+
+
     }
 
     @RequestMapping(value = "/getStudent", method = RequestMethod.POST)
@@ -58,5 +64,6 @@ public class StudentController {
     public List<StudentDocument> findByExampleMongo(@RequestBody StudentDto dto) {
         return studentService.findByExampleMongo(this.studentConverter.destinationToSourceModel(dto));
     }
+
 
 }
